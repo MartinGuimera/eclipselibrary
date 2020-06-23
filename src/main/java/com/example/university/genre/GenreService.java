@@ -1,21 +1,16 @@
 package com.example.university.genre;
 
-
 import java.util.List;
 
-import com.example.university.genre.model.Genre;
 import com.example.university.genre.model.GenreDto;
-
 
 public interface GenreService {
 
+  List<GenreDto> findAll();
 
-  List<Genre> findAll();
+  GenreDto get(Long id);
 
-  Genre get(Long id);
-
-
-  Genre save(GenreDto data);
+  GenreDto save(GenreDto data);
 
   void delete(Long id);
 

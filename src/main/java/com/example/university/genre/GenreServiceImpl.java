@@ -1,6 +1,6 @@
 package com.example.university.genre;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -23,35 +23,45 @@ public class GenreServiceImpl implements GenreService {
    * {@inheritDoc}
    */
   @Override
-  public List<Genre> findAll() {
+  public List<GenreDto> findAll() {
 
-    return (List<Genre>) this.genreRepository.findAll();
+    List<Genre> genreList = (List<Genre>) this.genreRepository.findAll();
+
+    return EntityToDtoList(genreList);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Genre get(Long id) {
+  public GenreDto get(Long id) {
 
-    return this.genreRepository.findById(id).orElse(null);
+    Genre genre = this.genreRepository.findById(id).orElse(null);
+
+    GenreDto genreDto = EntityToDto(genre);
+
+    return genreDto;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Genre save(GenreDto data) {
+  public GenreDto save(GenreDto data) {
 
-	  Genre categoria = null;
-    if (data.getId() != null)
-      categoria = get(data.getId());
-    else
+    GenreDto dataDto = new GenreDto();
+    Genre categoria = null;
+    if (data.getId() != null) {
+      dataDto = get(data.getId());
+      categoria = DtoToEntity(dataDto);
+    } else
       categoria = new Genre();
 
     BeanUtils.copyProperties(data, categoria);
 
-    return this.genreRepository.save(categoria);
+    GenreDto genreDto = EntityToDto(this.genreRepository.save(categoria));
+
+    return genreDto;
   }
 
   /**
@@ -62,6 +72,42 @@ public class GenreServiceImpl implements GenreService {
 
     this.genreRepository.deleteById(id);
 
+  }
+
+  private List<GenreDto> EntityToDtoList(List<Genre> genres) {
+
+    List<GenreDto> genreDtos = new ArrayList();
+
+    for (Genre genre : genres) {
+
+      GenreDto genreDto = new GenreDto();
+      genreDto.setId(genre.getId());
+      genreDto.setName(genre.getName());
+
+      genreDtos.add(genreDto);
+    }
+
+    return genreDtos;
+  }
+
+  private GenreDto EntityToDto(Genre genre) {
+
+    GenreDto genreDto = new GenreDto();
+
+    genreDto.setId(genre.getId());
+    genreDto.setName(genre.getName());
+
+    return genreDto;
+  }
+
+  private Genre DtoToEntity(GenreDto genreDto) {
+
+    Genre genre = new Genre();
+
+    genre.setId(genreDto.getId());
+    genre.setName(genreDto.getName());
+
+    return genre;
   }
 
 }

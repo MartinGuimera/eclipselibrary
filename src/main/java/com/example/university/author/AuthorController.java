@@ -1,11 +1,8 @@
 package com.example.university.author;
-
-
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.university.author.model.AuthorDto;
 
-@RequestMapping(value = "/author/v1")
+@RequestMapping(value = "/author")
 @RestController
 public class AuthorController {
 
@@ -33,16 +30,14 @@ public class AuthorController {
   @RequestMapping(path = "/{id}", method = RequestMethod.GET)
   public AuthorDto get(@PathVariable("id") Long id) {
 
-    return this.beanMapper.map(this.authorService.get(id), AuthorDto.class);
+    return this.authorService.get(id);
   }
-
 
   @RequestMapping(path = "/", method = RequestMethod.PUT)
   public AuthorDto save(@RequestBody AuthorDto data) {
 
-    return this.beanMapper.map(this.authorService.save(data), AuthorDto.class);
+    return this.authorService.save(data);
   }
-
 
   @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("id") Long id) {

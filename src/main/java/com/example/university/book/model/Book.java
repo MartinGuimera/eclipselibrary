@@ -21,7 +21,7 @@ public class Book {
   @Column(name = "id", nullable = false)
   private Long id;
 
-  @Column(name = "name")
+  @Column(name = "title")
   private String name;
   
   @OneToMany

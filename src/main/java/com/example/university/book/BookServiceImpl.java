@@ -1,5 +1,6 @@
 package com.example.university.book;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -22,35 +23,43 @@ public class BookServiceImpl implements BookService {
    * {@inheritDoc}
    */
   @Override
-  public List<Book> findAll() {
+  public List<BookDto> findAll() {
 
-    return (List<Book>) this.bookRepository.findAll();
+    List<Book> bookList = (List<Book>) this.bookRepository.findAll();
+
+    return EntityToDtoList(bookList);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Book get(Long id) {
+  public BookDto get(Long id) {
 
-    return this.bookRepository.findById(id).orElse(null);
+    Book book = this.bookRepository.findById(id).orElse(null);
+
+    return EntityToDto(book);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Book save(BookDto data) {
+  public BookDto save(BookDto data) {
 
-	  Book categoria = null;
-    if (data.getId() != null)
-      categoria = get(data.getId());
-    else
+    BookDto dataDto = new BookDto();
+    Book categoria = null;
+    if (data.getId() != null) {
+      dataDto = get(data.getId());
+      categoria = DtoToEntity(dataDto);
+    } else
       categoria = new Book();
 
     BeanUtils.copyProperties(data, categoria);
 
-    return this.bookRepository.save(categoria);
+    BookDto bookDto = EntityToDto(this.bookRepository.save(categoria));
+
+    return bookDto;
   }
 
   /**
@@ -61,6 +70,51 @@ public class BookServiceImpl implements BookService {
 
     this.bookRepository.deleteById(id);
 
+  }
+
+  private List<BookDto> EntityToDtoList(List<Book> books) {
+
+    List<BookDto> bookDtos = new ArrayList();
+
+    for (Book book : books) {
+      BookDto bookDto = new BookDto();
+      bookDto.setId(book.getId());
+      bookDto.setName(book.getName());
+      bookDto.setAuthor(book.getAuthor());
+      bookDto.setGenre(book.getGenre());
+      bookDto.setYear(book.getYear());
+
+      bookDtos.add(bookDto);
+    }
+
+    return bookDtos;
+
+  }
+
+  private BookDto EntityToDto(Book book) {
+
+    BookDto bookDto = new BookDto();
+
+    bookDto.setId(book.getId());
+    bookDto.setName(book.getName());
+    bookDto.setAuthor(book.getAuthor());
+    bookDto.setGenre(book.getGenre());
+    bookDto.setYear(book.getYear());
+
+    return bookDto;
+  }
+
+  private Book DtoToEntity(BookDto bookDto) {
+
+    Book book = new Book();
+
+    book.setId(bookDto.getId());
+    book.setName(bookDto.getName());
+    book.setAuthor(bookDto.getAuthor());
+    book.setGenre(bookDto.getGenre());
+    book.setYear(bookDto.getYear());
+
+    return book;
   }
 
 }

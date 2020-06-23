@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.beanutils.BeanMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.university.genre.model.GenreDto;
 
-@RequestMapping(value = "/genre/v1")
+@RequestMapping(value = "/genre")
 @RestController
 public class GenreController {
 
@@ -26,22 +25,20 @@ public class GenreController {
   @RequestMapping(path = "/", method = RequestMethod.GET)
   public List<GenreDto> findAll() {
 
-    return this.beanMapper.mapList(this.genreService.findAll(), GenreDto.class);
+    return this.genreService.findAll();
   }
 
   @RequestMapping(path = "/{id}", method = RequestMethod.GET)
   public GenreDto get(@PathVariable("id") Long id) {
 
-    return this.beanMapper.map(this.genreService.get(id), GenreDto.class);
+    return this.genreService.get(id);
   }
-
 
   @RequestMapping(path = "/", method = RequestMethod.PUT)
   public GenreDto save(@RequestBody GenreDto data) {
 
-    return this.beanMapper.map(this.genreService.save(data), GenreDto.class);
+    return this.genreService.save(data);
   }
-
 
   @RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
   public void delete(@PathVariable("id") Long id) {

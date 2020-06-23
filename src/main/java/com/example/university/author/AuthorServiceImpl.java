@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.example.university.author.model.Author;
@@ -25,38 +24,45 @@ public class AuthorServiceImpl implements AuthorService {
    */
   @Override
   public List<AuthorDto> findAll() {
-	  List<Author> authorList =  (List<Author>) this.authorRepository.findAll();
-	  List<AuthorDto> authorDto = new ArrayList();
-	  
-    return this.EntityToDto(authorList);
-    
-  }
 
+    List<Author> authorList = (List<Author>) this.authorRepository.findAll();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Author get(Long id) {
+    return EntityToDtoList(authorList);
 
-    return this.authorRepository.findById(id).orElse(null);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public Author save(AuthorDto data) {
+  public AuthorDto get(Long id) {
 
+    Author author = this.authorRepository.findById(id).orElse(null);
+
+    AuthorDto authorDto = EntityToDto(author);
+
+    return authorDto;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public AuthorDto save(AuthorDto data) {
+
+    AuthorDto dataDto = new AuthorDto();
     Author categoria = null;
-    if (data.getId() != null)
-      categoria = get(data.getId());
-    else
+    if (data.getId() != null) {
+      dataDto = get(data.getId());
+      categoria = DtoToEntity(dataDto);
+    } else
       categoria = new Author();
 
     BeanUtils.copyProperties(data, categoria);
 
-    return this.authorRepository.save(categoria);
+    AuthorDto authorDto = EntityToDto(this.authorRepository.save(categoria));
+
+    return authorDto;
   }
 
   /**
@@ -68,10 +74,39 @@ public class AuthorServiceImpl implements AuthorService {
     this.authorRepository.deleteById(id);
 
   }
-  
-  private List<AuthorDto> EntityToDto(List<Author> author){
-	  List<AuthorDto> authorDto= new ArrayList();
-	  
-	  return authorDto;
+
+  private List<AuthorDto> EntityToDtoList(List<Author> authors) {
+
+    List<AuthorDto> authorDtos = new ArrayList();
+
+    for (Author author : authors) {
+
+      AuthorDto authorDto = new AuthorDto();
+      authorDto.setId(author.getId());
+      authorDto.setName(author.getName());
+
+      authorDtos.add(authorDto);
+
+    }
+
+    return authorDtos;
+  }
+
+  private AuthorDto EntityToDto(Author author) {
+
+    AuthorDto authorDto = new AuthorDto();
+
+    authorDto.setId(author.getId());
+    authorDto.setName(author.getName());
+    return authorDto;
+  }
+
+  private Author DtoToEntity(AuthorDto authorDto) {
+
+    Author author = new Author();
+
+    author.setId(authorDto.getId());
+    author.setName(authorDto.getName());
+    return author;
   }
 }

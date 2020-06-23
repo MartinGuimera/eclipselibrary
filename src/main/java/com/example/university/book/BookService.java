@@ -2,19 +2,15 @@ package com.example.university.book;
 
 import java.util.List;
 
-import com.example.university.book.model.Book;
 import com.example.university.book.model.BookDto;
-
 
 public interface BookService {
 
+  List<BookDto> findAll();
 
-  List<Book> findAll();
+  BookDto get(Long id);
 
-  Book get(Long id);
-
-
-  Book save(BookDto data);
+  BookDto save(BookDto data);
 
   void delete(Long id);
 
